@@ -6,15 +6,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.simpfox.androidtask.ui.floataction.AppFloatActionButton
+import com.simpfox.androidtask.ui.pagertab.PagerTabLayout
 import com.simpfox.androidtask.ui.theme.AndroidTaskTheme
+import com.simpfox.androidtask.ui.topbar.TopBar
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -25,33 +35,31 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("MainActivity", "onCreate ${mainViewModel}")
+        Log.d("MainActivity", "onCreate $mainViewModel")
         enableEdgeToEdge()
         setContent {
             AndroidTaskTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
+                    AppFloatActionButton(
+                        Modifier.background(
+                            color = Color.Black.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .size(58.dp).clip(RoundedCornerShape(12.dp))
+                    ) {
+                        Log.d("MainActivity", "onCreate: Clicked")
+                    }
+                }) { innerPadding ->
+                    Column(
+                        modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        TopBar()
+                        PagerTabLayout()
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidTaskTheme {
-        Greeting("Android")
     }
 }
