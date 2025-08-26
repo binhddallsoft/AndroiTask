@@ -30,9 +30,7 @@ fun TaskListPage(state: TaskPageUiState) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ActiveTaskListSection()
+        ActiveTaskListSection(state.activeTaskList)
         CompletedTaskListSection()
-
-
     }
 }

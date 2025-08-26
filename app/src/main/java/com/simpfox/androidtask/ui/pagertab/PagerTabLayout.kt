@@ -1,5 +1,6 @@
 package com.simpfox.androidtask.ui.pagertab
 
+import android.icu.util.Calendar
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.simpfox.androidtask.ui.pagertab.state.TabUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskPageUiState
+import com.simpfox.androidtask.ui.pagertab.state.TaskUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,7 +53,24 @@ fun PagerTabLayout() {
         ),
     )
 
-    val listTaskPage = listOf(TaskPageUiState(listOf()), TaskPageUiState(listOf()))
+    val listTaskPage = listOf(TaskPageUiState(listOf(
+        TaskUiState(
+            content = "Task 1",
+            isCompleted = false,
+            isFavorite = true,
+            id = 1,
+            collectionId = 1,
+            updatedAt = Calendar.getInstance().timeInMillis,
+        ),
+        TaskUiState(
+            content = "Task 2",
+            isCompleted = true,
+            isFavorite = false,
+            id = 2,
+            collectionId = 1,
+            updatedAt = Calendar.getInstance().timeInMillis,
+        ),
+    ), listOf()), TaskPageUiState(listOf(), listOf()))
     pageCount = listTabs.size
     AppTabRowLayout(
         selectedTabIndex = pagerState.currentPage,
