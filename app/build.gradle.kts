@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.android.compiler)
 
-    implementation(libs.airbnb.android.lottie)
+    implementation(libs.lottie.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

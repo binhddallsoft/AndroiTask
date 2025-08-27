@@ -15,24 +15,28 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.simpfox.androidtask.TaskDelegate
 import com.simpfox.androidtask.ui.pagertab.state.TabUiState
+import com.simpfox.androidtask.ui.pagertab.state.TaskGroupUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskPageUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskUiState
 import kotlinx.coroutines.launch
 
 @Composable
-fun PagerTabLayout() {
+fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     // So page duoc tao ra -> by remember de luu lai trang thai sau khi recomponse (ve lai composable)
     var pageCount by remember { mutableIntStateOf(0) }
 
@@ -42,39 +46,19 @@ fun PagerTabLayout() {
     } // Dung de dieu khien va sync giua tabrow va horizontalpager
     val scope = rememberCoroutineScope()
 
-    val listTabs = listOf(
-        TabUiState(
-            id = 1,
-            title = "Tab 1"
-        ),
-        TabUiState(
-            id = 2,
-            title = "Tab 2"
-        ),
-    )
+    pageCount = state.size
 
-    val listTaskPage = listOf(TaskPageUiState(listOf(
-        TaskUiState(
-            content = "Task 1",
-            isCompleted = false,
-            isFavorite = true,
-            id = 1,
-            collectionId = 1,
-            updatedAt = Calendar.getInstance().timeInMillis,
-        ),
-        TaskUiState(
-            content = "Task 2",
-            isCompleted = true,
-            isFavorite = false,
-            id = 2,
-            collectionId = 1,
-            updatedAt = Calendar.getInstance().timeInMillis,
-        ),
-    ), listOf()), TaskPageUiState(listOf(), listOf()))
-    pageCount = listTabs.size
+
+    // Tai sao lai dung LunchedEffect? va snapshotFlow?
+    LaunchedEffect(Unit) {
+        snapshotFlow { pagerState.currentPage }.collect { index ->
+            taskDelegate.updateCurrentCollectionIndex(index)
+        }
+    }
+
     AppTabRowLayout(
         selectedTabIndex = pagerState.currentPage,
-        listTabs = listTabs,
+        listTabs = state.map { it.tab },
         onTabSelected = { index ->
             scope.launch {
                 pagerState.scrollToPage(index)
@@ -82,6 +66,6 @@ fun PagerTabLayout() {
         }
     )
     HorizontalPager(pagerState, key = { it }) { pageIndex ->
-        TaskListPage(state = listTaskPage[pageIndex])
+        TaskListPage(state = state[pageIndex].page, taskDelegate)
     }
 }

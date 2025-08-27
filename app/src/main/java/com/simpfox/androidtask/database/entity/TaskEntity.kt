@@ -9,14 +9,16 @@ import androidx.room.PrimaryKey
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "title")
-    val title: String,
-    @ColumnInfo(name = "is_favourite")
-    val isFavourite: Boolean,
+    @ColumnInfo(name = "content")
+    val content: String,
+    @ColumnInfo(name = "is_favorite")
+    val isFavorite: Boolean,
     @ColumnInfo(name = "is_completed")
     val isCompleted: Boolean,
     @ColumnInfo(name = "collection_id")
     val collectionId: Long,
     @ColumnInfo(name = "update_at")
     val updatedAt: Long,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long? = null
 )

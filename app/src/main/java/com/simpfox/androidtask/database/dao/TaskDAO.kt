@@ -21,20 +21,26 @@ interface TaskDAO {
     suspend fun getTaskCollections(): List<TaskCollection>
 
     @Query("SELECT * FROM task WHERE collection_id = :collectionId")
-    suspend fun getTasksByCollectionId(collectionId: Int): List<TaskEntity>
+    suspend fun getTasksByCollectionId(collectionId: Long): List<TaskEntity>
 
-    @Query("UPDATE task SET is_favourite = :isFavorite WHERE id = :taskId")
+    @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean)
 
     @Query("UPDATE task SET is_completed = :isCompleted WHERE id = :taskId")
-    suspend fun updateTaskCompletion(taskId: Int, isCompleted: Boolean)
+    suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Int
 
     @Query("UPDATE task_collections SET title = :title WHERE id = :collectionId")
-    suspend fun updateTaskCollectionTitle(collectionId: Long, title: String)
+    suspend fun updateTaskCollectionTitle(collectionId: Long, title: String): Int
 
     @Update
-    suspend fun updateTaskCollection(taskCollection: TaskCollection) // Neu co id thi se tu tim id de update entity
+    suspend fun updateTaskCollection(taskCollection: TaskCollection): Int
+
+    @Update
+    suspend fun updateTask(task: TaskEntity): Int
 
     @Delete
-    suspend fun deleteTaskCollection(taskCollection: TaskCollection) // Neu co id thi se tu tim id de xoa entity
+    suspend fun deleteTaskCollection(taskCollection: TaskCollection): Int
+
+    @Delete
+    suspend fun deleteTask(task: TaskEntity): Int
 }
