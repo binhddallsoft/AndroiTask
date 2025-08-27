@@ -85,13 +85,15 @@ class MainActivity : ComponentActivity() {
                 }
                 if (isShowAddTaskBottomSheet) {
                     var inputTaskContent by remember { mutableStateOf("") }
-                    ModalBottomSheet({  }) {
+                    ModalBottomSheet({
+                    }) {
                         Text("Input Task Content Here")
                         TextField(value = "inputTaskContent", onValueChange = {inputTaskContent = it})
                         Button({
                             if(inputTaskContent.isNotEmpty()) {
                                 taskDelegate.addNewTaskToCurrentCollection(inputTaskContent)
                                 inputTaskContent = ""
+                                isShowAddTaskBottomSheet = false
                             }
                         }) {
                             Text("Add Task")
