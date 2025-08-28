@@ -56,7 +56,7 @@ fun TaskItemLayout(
                 textDecoration = TextDecoration.LineThrough.takeIf { state.isCompleted }
             )
             if (state.isCompleted) {
-                Text(text = "Completed: ${state.updatedAt}", modifier = Modifier.padding(horizontal = 4.dp))
+                Text(text = "Completed: ${state.stringUpdatedAt}", modifier = Modifier.padding(horizontal = 4.dp))
             }
         }
         if(!state.isCompleted) {
@@ -66,7 +66,7 @@ fun TaskItemLayout(
             modifier = Modifier
                 .padding(6.dp)
                 .clickable {
-                    taskDelegate.invertTaskFavourite(state)
+                    taskDelegate.invertTaskFavorite(state)
                 }
         )
     }

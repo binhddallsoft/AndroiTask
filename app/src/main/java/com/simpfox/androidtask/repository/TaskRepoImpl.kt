@@ -41,7 +41,8 @@ class TaskRepoImpl(
             collectionId = collectionId,
             updatedAt = now,
             isFavorite = false,
-            isCompleted = false
+            isCompleted = false,
+            createdAt = now
         )
         val id = taskDao.insertTasks(task)
         if(id > 0) {
@@ -57,8 +58,12 @@ class TaskRepoImpl(
         taskDao.updateTask(task) > 0
     }
 
-    override suspend fun updateTaskCompleted(task: TaskEntity): Boolean = withContext(Dispatchers.IO) {
-        taskDao.updateTaskCompleted(task.id, task.isCompleted) > 0
+    override suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean = withContext(Dispatchers.IO) {
+        taskDao.updateTaskCompleted(taskId, isCompleted) > 0
+    }
+
+    override suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean = withContext(Dispatchers.IO) {
+        taskDao.updateTaskFavorite(taskId, isFavorite) > 0
     }
 
     override suspend fun updateTaskCollection(taskCollection: TaskCollection) = withContext(Dispatchers.IO) {

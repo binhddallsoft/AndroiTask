@@ -22,6 +22,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,9 +53,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidTaskTheme {
 
-                val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle() // Tai sao phai by va tai sao lai dung collectAsStateWithLifecycle -> Tu lang nghe vong doi cua activity
+                val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList()) // Tai sao phai by va tai sao lai dung collectAsStateWithLifecycle -> Tu lang nghe vong doi cua activity
                 val taskDelegate = remember { mainViewModel }
                 var isShowAddTaskBottomSheet by remember { mutableStateOf(false) }
+                var isShowAddCollectionBottomSheet by remember { mutableStateOf(false) }
+
+                LaunchedEffect(Unit) {
+                    mainViewModel.eventFlow.collect {
+                        when(it) {
+                            MainEvent.RequestAddNewCollection -> {
+                                isShowAddCollectionBottomSheet = true
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
+
+
                 Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
                     AppFloatActionButton(
                         Modifier
@@ -75,7 +92,7 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TopBar()
+                        TopBar(taskDelegate)
                         if(listTabGroup.isNotEmpty()) {
                             PagerTabLayout(listTabGroup, taskDelegate)
                         } else {
@@ -86,16 +103,35 @@ class MainActivity : ComponentActivity() {
                 if (isShowAddTaskBottomSheet) {
                     var inputTaskContent by remember { mutableStateOf("") }
                     ModalBottomSheet({
+                        isShowAddTaskBottomSheet = false
                     }) {
-                        Text("Input Task Content Here")
-                        TextField(value = "inputTaskContent", onValueChange = {inputTaskContent = it})
+                        Text("Input Task Content Here", modifier = Modifier.fillMaxWidth())
+                        TextField(value = inputTaskContent, onValueChange = {inputTaskContent = it}, modifier = Modifier.fillMaxWidth())
                         Button({
                             if(inputTaskContent.isNotEmpty()) {
                                 taskDelegate.addNewTaskToCurrentCollection(inputTaskContent)
                                 inputTaskContent = ""
-                                isShowAddTaskBottomSheet = false
                             }
-                        }) {
+                            isShowAddTaskBottomSheet = false
+                        }, modifier = Modifier.align( Alignment.CenterHorizontally )) {
+                            Text("Add Task")
+                        }
+                    }
+                }
+                if (isShowAddCollectionBottomSheet) {
+                    var inputTaskCollection by remember { mutableStateOf("") }
+                    ModalBottomSheet({
+                        isShowAddCollectionBottomSheet = false
+                    }) {
+                        Text("Input Task Content Here", modifier = Modifier.fillMaxWidth())
+                        TextField(value = inputTaskCollection, onValueChange = {inputTaskCollection = it}, modifier = Modifier.fillMaxWidth())
+                        Button({
+                            if(inputTaskCollection.isNotEmpty()) {
+                                taskDelegate.addNewCollection(inputTaskCollection)
+                                inputTaskCollection = ""
+                            }
+                            isShowAddCollectionBottomSheet = false
+                        }, modifier = Modifier.align( Alignment.CenterHorizontally )) {
                             Text("Add Task")
                         }
                     }

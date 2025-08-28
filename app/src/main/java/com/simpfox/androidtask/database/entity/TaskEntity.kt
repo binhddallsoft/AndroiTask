@@ -20,5 +20,5 @@ data class TaskEntity(
     @ColumnInfo(name = "update_at")
     val updatedAt: Long,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long? = null
+    val createdAt: Long
 )

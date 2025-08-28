@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.simpfox.androidtask.ID_ADD_NEW_LIST
 import com.simpfox.androidtask.TaskDelegate
 import com.simpfox.androidtask.ui.pagertab.state.TabUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskGroupUiState
@@ -46,7 +47,9 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     } // Dung de dieu khien va sync giua tabrow va horizontalpager
     val scope = rememberCoroutineScope()
 
-    pageCount = state.size
+    pageCount = state.count {
+        it.tab.id != ID_ADD_NEW_LIST
+    }
 
 
     // Tai sao lai dung LunchedEffect? va snapshotFlow?
@@ -60,12 +63,16 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
         selectedTabIndex = pagerState.currentPage,
         listTabs = state.map { it.tab },
         onTabSelected = { index ->
-            scope.launch {
-                pagerState.scrollToPage(index)
+            if((state.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
+                taskDelegate.requestAddNewCollection()
+            } else {
+                scope.launch {
+                    pagerState.scrollToPage(index)
+                }
             }
         }
     )
-    HorizontalPager(pagerState, key = { it }) { pageIndex ->
+    HorizontalPager(pagerState, key = { it }, beyondViewportPageCount = 2) { pageIndex ->
         TaskListPage(state = state[pageIndex].page, taskDelegate)
     }
 }

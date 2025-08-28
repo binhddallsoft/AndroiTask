@@ -24,7 +24,7 @@ interface TaskDAO {
     suspend fun getTasksByCollectionId(collectionId: Long): List<TaskEntity>
 
     @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
-    suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean)
+    suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean) : Int
 
     @Query("UPDATE task SET is_completed = :isCompleted WHERE id = :taskId")
     suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Int
