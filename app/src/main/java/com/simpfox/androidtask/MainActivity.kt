@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.simpfox.androidtask.ui.TaskApp
 import com.simpfox.androidtask.ui.floataction.AppFloatActionButton
 import com.simpfox.androidtask.ui.pagertab.PagerTabLayout
 import com.simpfox.androidtask.ui.theme.AndroidTaskTheme
@@ -43,100 +44,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val mainViewModel: MainViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("MainActivity", "onCreate $mainViewModel")
         enableEdgeToEdge()
         setContent {
-            AndroidTaskTheme {
-
-                val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList()) // Tai sao phai by va tai sao lai dung collectAsStateWithLifecycle -> Tu lang nghe vong doi cua activity
-                val taskDelegate = remember { mainViewModel }
-                var isShowAddTaskBottomSheet by remember { mutableStateOf(false) }
-                var isShowAddCollectionBottomSheet by remember { mutableStateOf(false) }
-
-                LaunchedEffect(Unit) {
-                    mainViewModel.eventFlow.collect {
-                        when(it) {
-                            MainEvent.RequestAddNewCollection -> {
-                                isShowAddCollectionBottomSheet = true
-                            }
-                            else -> {
-
-                            }
-                        }
-                    }
-                }
-
-
-                Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
-                    AppFloatActionButton(
-                        Modifier
-                            .background(
-                                color = Color.Black.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .size(58.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                    ) {
-                        isShowAddTaskBottomSheet = true
-                    }
-                }) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        TopBar(taskDelegate)
-                        if(listTabGroup.isNotEmpty()) {
-                            PagerTabLayout(listTabGroup, taskDelegate)
-                        } else {
-                            Text("NO TASK AVAILABLE")
-                        }
-                    }
-                }
-                if (isShowAddTaskBottomSheet) {
-                    var inputTaskContent by remember { mutableStateOf("") }
-                    ModalBottomSheet({
-                        isShowAddTaskBottomSheet = false
-                    }) {
-                        Text("Input Task Content Here", modifier = Modifier.fillMaxWidth())
-                        TextField(value = inputTaskContent, onValueChange = {inputTaskContent = it}, modifier = Modifier.fillMaxWidth())
-                        Button({
-                            if(inputTaskContent.isNotEmpty()) {
-                                taskDelegate.addNewTaskToCurrentCollection(inputTaskContent)
-                                inputTaskContent = ""
-                            }
-                            isShowAddTaskBottomSheet = false
-                        }, modifier = Modifier.align( Alignment.CenterHorizontally )) {
-                            Text("Add Task")
-                        }
-                    }
-                }
-                if (isShowAddCollectionBottomSheet) {
-                    var inputTaskCollection by remember { mutableStateOf("") }
-                    ModalBottomSheet({
-                        isShowAddCollectionBottomSheet = false
-                    }) {
-                        Text("Input Task Content Here", modifier = Modifier.fillMaxWidth())
-                        TextField(value = inputTaskCollection, onValueChange = {inputTaskCollection = it}, modifier = Modifier.fillMaxWidth())
-                        Button({
-                            if(inputTaskCollection.isNotEmpty()) {
-                                taskDelegate.addNewCollection(inputTaskCollection)
-                                inputTaskCollection = ""
-                            }
-                            isShowAddCollectionBottomSheet = false
-                        }, modifier = Modifier.align( Alignment.CenterHorizontally )) {
-                            Text("Add Task")
-                        }
-                    }
-                }
-            }
+            TaskApp()
         }
     }
 }

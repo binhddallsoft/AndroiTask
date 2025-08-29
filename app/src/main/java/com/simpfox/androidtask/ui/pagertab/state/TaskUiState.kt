@@ -13,6 +13,7 @@ data class TaskUiState(
     val collectionId: Long,
     val updatedAt: Long,
     val stringUpdatedAt: String,
+    val createdAt: Long
 )
 
 fun TaskEntity.toTaskUiState() : TaskUiState {
@@ -23,7 +24,8 @@ fun TaskEntity.toTaskUiState() : TaskUiState {
         isCompleted = this.isCompleted,
         collectionId = this.collectionId,
         updatedAt = this.updatedAt,
-        stringUpdatedAt = this.updatedAt.millisToStringDate()
+        stringUpdatedAt = this.updatedAt.millisToStringDate(),
+        createdAt = this.createdAt
     )
 }
 

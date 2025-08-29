@@ -31,7 +31,7 @@ import com.simpfox.androidtask.TaskDelegate
 import com.simpfox.androidtask.ui.pagertab.state.TaskUiState
 
 @Composable
-fun ActiveTaskListSection(activeTaskList: List<TaskUiState>, taskDelegate: TaskDelegate) {
+fun ActiveTaskListSection(collectionId: Long, activeTaskList: List<TaskUiState>, taskDelegate: TaskDelegate) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,52 +45,55 @@ fun ActiveTaskListSection(activeTaskList: List<TaskUiState>, taskDelegate: TaskD
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //Lottie Animation for empty state
-        AnimatedVisibility(
-            visible = activeTaskList.isEmpty(),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val lottieComposition by rememberLottieComposition (
-                    spec = LottieCompositionSpec.RawRes(R.raw.lottie_empty_01)
-                )
-                LottieAnimation(lottieComposition)
-                Text("All Tasks Completed", style = MaterialTheme.typography.headlineMedium)
-                Text("Nice Work!!", style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-        AnimatedVisibility(
-            visible = activeTaskList.isNotEmpty(),
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-
-            ) {
-                Text("Title",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1.0f),
-                    textAlign = TextAlign.Start
-                )
-                Text("S", style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.clickable {
-
-                    }.padding(vertical = 4.dp, horizontal = 8.dp))
-                Text("D", style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.clickable {
-
-                    }.padding(vertical = 4.dp, horizontal = 8.dp))
-            }
-        }
-        activeTaskList.forEach {
-            key(it.id) {
-                TaskItemLayout(it, taskDelegate)
-            }
-        }
+//        //Lottie Animation for empty state
+//        AnimatedVisibility(
+//            visible = activeTaskList.isEmpty(),
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentHeight(),
+//                verticalArrangement = Arrangement.spacedBy(2.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                val lottieComposition by rememberLottieComposition (
+//                    spec = LottieCompositionSpec.RawRes(R.raw.lottie_empty_01)
+//                )
+//                LottieAnimation(lottieComposition)
+//                Text("All Tasks Completed", style = MaterialTheme.typography.headlineMedium)
+//                Text("Nice Work!!", style = MaterialTheme.typography.bodyMedium)
+//            }
+//        }
+//        AnimatedVisibility(
+//            visible = activeTaskList.isNotEmpty(),
+//        ) {
+//            Row(
+//                modifier = Modifier
+//                    .padding(horizontal = 8.dp)
+//
+//            ) {
+//                Text("Title",
+//                    style = MaterialTheme.typography.titleLarge,
+//                    modifier = Modifier.weight(1.0f),
+//                    textAlign = TextAlign.Start
+//                )
+//                Text("S", style = MaterialTheme.typography.titleSmall,
+//                    modifier = Modifier.clickable {
+//                        taskDelegate.requestSortTask(collectionId)
+//                    }.padding(vertical = 4.dp, horizontal = 8.dp))
+//
+//                if (collectionId > 0) {
+//                    Text("D", style = MaterialTheme.typography.titleSmall,
+//                        modifier = Modifier.clickable {
+//                            taskDelegate.requestUpdateCollection(collectionId)
+//                        }.padding(vertical = 4.dp, horizontal = 8.dp))
+//                }
+//            }
+//        }
+//        activeTaskList.forEach {
+//            key(it.id) {
+//                TaskItemLayout(it, taskDelegate)
+//            }
+//        }
     }
 }

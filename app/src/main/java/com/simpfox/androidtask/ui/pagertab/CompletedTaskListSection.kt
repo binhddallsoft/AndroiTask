@@ -59,7 +59,7 @@ fun CompletedTaskListSection(completeTaskList: List<TaskUiState>, taskDelegate: 
             if(expanded) {
                 completeTaskList.forEachIndexed { _, taskUiState ->
                     key(taskUiState.id) {
-                        TaskItemLayout(taskUiState, taskDelegate)
+//                        TaskItemLayout(taskUiState, taskDelegate)
                     }
                 }
             }

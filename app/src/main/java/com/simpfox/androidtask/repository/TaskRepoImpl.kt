@@ -1,6 +1,7 @@
 package com.simpfox.androidtask.repository
 
 import com.simpfox.androidtask.database.dao.TaskDAO
+import com.simpfox.androidtask.database.entity.SortType
 import com.simpfox.androidtask.database.entity.TaskCollection
 import com.simpfox.androidtask.database.entity.TaskEntity
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,8 @@ class TaskRepoImpl(
     }
 
     override suspend fun addTaskCollection(title: String): TaskCollection? {
-        val taskCollection = TaskCollection(title = title, updatedAt = Calendar.getInstance().timeInMillis)
+        val now = Calendar.getInstance().timeInMillis
+        val taskCollection = TaskCollection(title = title, updatedAt = now, createAt = now, sortType = SortType.CREATED_DATE.value)
         val id = taskDao.insertTaskCollection(taskCollection)
         return if(id > 0) {
             taskCollection.copy(
@@ -69,4 +71,14 @@ class TaskRepoImpl(
     override suspend fun updateTaskCollection(taskCollection: TaskCollection) = withContext(Dispatchers.IO) {
         taskDao.updateTaskCollection(taskCollection) > 0
     }
+
+    override suspend fun deleteTaskCollectionById(collectionId: Long) = withContext(Dispatchers.IO) {
+        taskDao.deleteTaskCollectionById(collectionId) > 0
+    }
+
+    override suspend fun updateCollectionSortType(collectionId: Long, sortType: Int)  = withContext(Dispatchers.IO) {
+        taskDao.updateCollectionSortType(collectionId, sortType) > 0
+    }
+
+
 }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -40,7 +41,8 @@ import kotlinx.coroutines.launch
 fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     // So page duoc tao ra -> by remember de luu lai trang thai sau khi recomponse (ve lai composable)
     var pageCount by remember { mutableIntStateOf(0) }
-
+    var internalState by remember { mutableStateOf(state) }
+    internalState = state
     // Tao pager state cung cap pageCount duoi dang lambda -> Dieu khien trang thai cuon trang va hien thi dang o trang nao
     val pagerState = rememberPagerState {
         pageCount
@@ -55,7 +57,9 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     // Tai sao lai dung LunchedEffect? va snapshotFlow?
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { index ->
-            taskDelegate.updateCurrentCollectionIndex(index)
+            internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
+                taskDelegate.updateCurrentCollectionId(currentCollectionId)
+            }
         }
     }
 
@@ -73,6 +77,6 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
         }
     )
     HorizontalPager(pagerState, key = { it }, beyondViewportPageCount = 2) { pageIndex ->
-        TaskListPage(state = state[pageIndex].page, taskDelegate)
+        TaskListPage(state[pageIndex], taskDelegate)
     }
 }
