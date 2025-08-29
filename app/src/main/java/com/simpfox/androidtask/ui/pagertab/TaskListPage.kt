@@ -53,16 +53,21 @@ fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate) {
         topCorner()
         activeTasksHeader("header", state, taskDelegate)
         emptyState("empty", state.page)
-        listTaskItems("active", state.page.activeTaskList, taskDelegate)
+        listTaskItems(TaskListStatus.ACTIVE, state.page.activeTaskList, taskDelegate)
         bottomCorner()
         spacer(24)
 
         if (state.page.completedTaskList.isNotEmpty()) {
             topCorner()
-            listTaskItems("completed", state.page.completedTaskList, taskDelegate)
+            listTaskItems(TaskListStatus.COMPLETE, state.page.completedTaskList, taskDelegate)
             bottomCorner()
         }
 //        item { ActiveTaskListSection(collectionId,state.activeTaskList, taskDelegate) }
 //        item { CompletedTaskListSection(state.completedTaskList, taskDelegate) }
     }
+}
+
+enum class TaskListStatus(val value: String) {
+    ACTIVE("active"),
+    COMPLETE("complete"),
 }

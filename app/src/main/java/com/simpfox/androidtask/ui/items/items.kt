@@ -31,6 +31,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.simpfox.androidtask.R
 import com.simpfox.androidtask.TaskDelegate
 import com.simpfox.androidtask.ui.pagertab.TaskItemLayout
+import com.simpfox.androidtask.ui.pagertab.TaskListStatus
 import com.simpfox.androidtask.ui.pagertab.state.TaskGroupUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskPageUiState
 import com.simpfox.androidtask.ui.pagertab.state.TaskUiState
@@ -124,7 +125,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDe
     }
 }
 
-fun LazyListScope.listTaskItems(key: String, state: List<TaskUiState>, taskDelegate: TaskDelegate) {
+fun LazyListScope.listTaskItems(key: TaskListStatus, state: List<TaskUiState>, taskDelegate: TaskDelegate) {
     itemsIndexed(state, key = { _, item -> "$key${item.id}" }, contentType = { _, item -> item::class.java.name }) { _, item ->
         TaskItemLayout(item, taskDelegate)
     }
